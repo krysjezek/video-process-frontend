@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import JobSubmissionForm from '../components/JobSubmissionForm';
 import StatusDisplay from '../components/StatusDisplay';
-import EstimatedRenderProgress from '../components/EstimatedRenderProgress';
+import CombinedRenderProgress from '../components/CombinedRenderProgress';
 import { submitJob, getJobStatus, API_BASE_URL } from '../utils/api';
 
 export default function Home() {
@@ -12,10 +12,10 @@ export default function Home() {
   const [downloadUrl, setDownloadUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [totalScenes, setTotalScenes] = useState(3);
-  // New state to hold scene configuration from the JobSubmissionForm
+  // New state to hold scene configuration lifted from JobSubmissionForm.
   const [scenesData, setScenesData] = useState([]);
 
-  // Load mockup.json from public folder on mount
+  // Load mockup.json from public folder on mount.
   useEffect(() => {
     fetch('/mockup.json')
       .then((res) => res.json())
@@ -31,7 +31,7 @@ export default function Home() {
       });
   }, []);
 
-  // Poll for job status every 5 seconds
+  // Poll for job status every 5 seconds.
   useEffect(() => {
     if (jobId) {
       const interval = setInterval(async () => {
@@ -39,7 +39,7 @@ export default function Home() {
           const data = await getJobStatus(jobId);
           setStatus(`Current status: ${data.status}.`);
           if (data.status === "SUCCESS" && data.meta) {
-            // Use data.meta instead of data.result
+            // Use data.meta instead of data.result.
             const filename = data.meta.split('/').pop();
             setDownloadUrl(`${API_BASE_URL}/download/${filename}`);
             setStatus(`Job ${jobId} succeeded.`);
@@ -57,7 +57,7 @@ export default function Home() {
 
   const handleJobSubmit = async (formData) => {
     setIsLoading(true);
-    // Reset the download URL when a new job is submitted
+    // Reset the download URL when a new job is submitted.
     setDownloadUrl('');
     setStatus("Submitting job...");
     try {
@@ -78,7 +78,7 @@ export default function Home() {
         <JobSubmissionForm 
           mockups={mockups} 
           onSubmit={handleJobSubmit} 
-          onScenesChange={setScenesData}  // Callback to lift scenesData from the form
+          onScenesChange={setScenesData}  // Lifting scenes data to Home.
         />
       ) : (
         <p>Loading mockup configurations...</p>
@@ -88,12 +88,12 @@ export default function Home() {
         downloadUrl={downloadUrl} 
         jobSubmitted={jobId !== ''}
       />
-
-      {/* Render the estimated progress bars if a job has been submitted and scenes data exists */}
+      
+      {/* Render the combined progress bar if a job has been submitted and scenes data exists */}
       {jobId && scenesData.length > 0 && (
         <div style={{ marginTop: "20px" }}>
-          <h2>Estimated Rendering Progress</h2>
-          <EstimatedRenderProgress scenesData={scenesData} />
+          <h2>Overall Estimated Rendering Progress</h2>
+          <CombinedRenderProgress scenesData={scenesData} />
         </div>
       )}
     </div>
