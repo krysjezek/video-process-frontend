@@ -12,7 +12,6 @@ export default function Home() {
   const [downloadUrl, setDownloadUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [totalScenes, setTotalScenes] = useState(3);
-  // New state to hold scene configuration from the JobSubmissionForm
   const [scenesData, setScenesData] = useState([]);
 
   // Load mockup.json from public folder on mount
@@ -78,7 +77,7 @@ export default function Home() {
         <JobSubmissionForm 
           mockups={mockups} 
           onSubmit={handleJobSubmit} 
-          onScenesChange={setScenesData}  // Callback to lift scenesData from the form
+          onScenesChange={setScenesData}
         />
       ) : (
         <p>Loading mockup configurations...</p>
@@ -89,11 +88,14 @@ export default function Home() {
         jobSubmitted={jobId !== ''}
       />
 
-      {/* Render the estimated progress bars if a job has been submitted and scenes data exists */}
-      {jobId && scenesData.length > 0 && (
+      {/* Render the estimated sequential progress bars only if a job has been submitted and not finished */}
+      {jobId && scenesData.length > 0 && !downloadUrl && (
         <div style={{ marginTop: "20px" }}>
           <h2>Estimated Rendering Progress</h2>
-          <EstimatedRenderProgress scenesData={scenesData} />
+          <EstimatedRenderProgress 
+            scenesData={scenesData}
+            jobFinished={downloadUrl !== ''}
+          />
         </div>
       )}
     </div>
