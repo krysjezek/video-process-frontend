@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 export default function CombinedRenderProgress({ scenesData }) {
-  // Calculate the total estimated render time (in seconds) for all scenes.
-  // Use the formula: (frames * 0.5) + 15 seconds for each scene.
+  // Compute the overall estimated render time with the new formula: (frames * 0.2) + 7 for each scene.
   const totalTimeSeconds = scenesData.reduce((acc, scene) => {
     const frames = scene.out_frame - scene.in_frame;
     if (frames > 0) {
@@ -12,28 +11,26 @@ export default function CombinedRenderProgress({ scenesData }) {
     return acc;
   }, 0);
 
-  // If totalTimeSeconds is zero (or no scene has frames), we return nothing.
+  // If there is no estimated time (i.e. no valid scenes) return nothing.
   if (totalTimeSeconds <= 0) return null;
 
-  // State to keep track of overall progress percentage.
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Convert total estimated time to milliseconds.
     const totalDurationMs = totalTimeSeconds * 1000;
     const startTime = Date.now();
 
     const timer = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      // Calculate progress as a percentage (max capped at 100).
+      // Calculate progress as a percentage.
       const newProgress = Math.min((elapsed / totalDurationMs) * 100, 100);
       setProgress(newProgress);
 
-      // Clear timer when progress is complete.
+      // Clear the timer when progress reaches 100%.
       if (newProgress >= 100) {
         clearInterval(timer);
       }
-    }, 100); // update every 100ms
+    }, 100); // Update every 100ms
 
     return () => clearInterval(timer);
   }, [totalTimeSeconds]);

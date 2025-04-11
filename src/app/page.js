@@ -89,8 +89,8 @@ export default function Home() {
         jobSubmitted={jobId !== ''}
       />
       
-      {/* Render the combined progress bar if a job has been submitted and scenes data exists */}
-      {jobId && scenesData.length > 0 && (
+      {/* Render the combined progress bar only if a job is active, scenes are available, and the job is not finished */}
+      {jobId && scenesData.length > 0 && !downloadUrl && (
         <div style={{ marginTop: "20px" }}>
           <h2>Overall Estimated Rendering Progress</h2>
           <CombinedRenderProgress scenesData={scenesData} />
