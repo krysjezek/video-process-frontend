@@ -55,6 +55,8 @@ export default function Home() {
 
   const handleJobSubmit = async (formData) => {
     setIsLoading(true);
+    // Reset the download URL when a new job is submitted
+    setDownloadUrl('');
     setStatus("Submitting job...");
     try {
       const data = await submitJob(formData);
@@ -66,6 +68,7 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
