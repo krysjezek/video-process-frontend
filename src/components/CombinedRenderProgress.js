@@ -6,7 +6,7 @@ export default function CombinedRenderProgress({ scenesData }) {
   const totalTimeSeconds = scenesData.reduce((acc, scene) => {
     const frames = scene.out_frame - scene.in_frame;
     if (frames > 0) {
-      return acc + (frames * 0.2 + 7 + 6);
+      return acc + (frames * 0.2 + 7 + 5);
     }
     return acc;
   }, 0);

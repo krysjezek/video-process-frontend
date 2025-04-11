@@ -2,7 +2,6 @@
 export default function StatusDisplay({ status, downloadUrl, jobSubmitted }) {
   return (
     <div style={{ marginBottom: "20px" }}>
-      {status && <p>{status}</p>}
       {/* Show download button only if downloadUrl exists */}
       {downloadUrl !== '' && (
         <div style={{ marginTop: "20px" }}>
