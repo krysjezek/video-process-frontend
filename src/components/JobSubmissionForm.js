@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import SceneCard from "./SceneCard";
 import FileDropZone from "./FileDropZone";
 
-export default function JobSubmissionForm({ mockups, onSubmit }) {
+export default function JobSubmissionForm({ mockups, onSubmit, onScenesChange }) {
   const defaultMockup = Object.keys(mockups)[0] || '';
   const [selectedMockup, setSelectedMockup] = useState(defaultMockup);
   const [scenesData, setScenesData] = useState([]);
@@ -24,6 +24,13 @@ export default function JobSubmissionForm({ mockups, onSubmit }) {
       setScenesData(defaultOrder);
     }
   }, [selectedMockup, mockups]);
+
+  // Notify the parent component of the updated scenes data.
+  useEffect(() => {
+    if (typeof onScenesChange === 'function') {
+      onScenesChange(scenesData);
+    }
+  }, [scenesData, onScenesChange]);
 
   const handleMockupChange = (e) => {
     setSelectedMockup(e.target.value);

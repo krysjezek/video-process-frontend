@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import JobSubmissionForm from '../components/JobSubmissionForm';
 import StatusDisplay from '../components/StatusDisplay';
+import EstimatedRenderProgress from '../components/EstimatedRenderProgress';
 import { submitJob, getJobStatus, API_BASE_URL } from '../utils/api';
 
 export default function Home() {
@@ -11,6 +12,8 @@ export default function Home() {
   const [downloadUrl, setDownloadUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [totalScenes, setTotalScenes] = useState(3);
+  // New state to hold scene configuration from the JobSubmissionForm
+  const [scenesData, setScenesData] = useState([]);
 
   // Load mockup.json from public folder on mount
   useEffect(() => {
@@ -52,7 +55,6 @@ export default function Home() {
     }
   }, [jobId, totalScenes]);
 
-
   const handleJobSubmit = async (formData) => {
     setIsLoading(true);
     // Reset the download URL when a new job is submitted
@@ -68,13 +70,16 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <h1>Video Processing Frontend</h1>
       {Object.keys(mockups).length > 0 ? (
-        <JobSubmissionForm mockups={mockups} onSubmit={handleJobSubmit} />
+        <JobSubmissionForm 
+          mockups={mockups} 
+          onSubmit={handleJobSubmit} 
+          onScenesChange={setScenesData}  // Callback to lift scenesData from the form
+        />
       ) : (
         <p>Loading mockup configurations...</p>
       )}
@@ -83,6 +88,14 @@ export default function Home() {
         downloadUrl={downloadUrl} 
         jobSubmitted={jobId !== ''}
       />
+
+      {/* Render the estimated progress bars if a job has been submitted and scenes data exists */}
+      {jobId && scenesData.length > 0 && (
+        <div style={{ marginTop: "20px" }}>
+          <h2>Estimated Rendering Progress</h2>
+          <EstimatedRenderProgress scenesData={scenesData} />
+        </div>
+      )}
     </div>
   );
 }
