@@ -14,12 +14,12 @@ export default function JobSubmissionForm({ mockups, onSubmit, onScenesChange })
   // When the selected mockup changes, update scenesData including thumb and max_frame.
   useEffect(() => {
     if (mockups[selectedMockup]) {
-      const defaultOrder = mockups[selectedMockup].scenes.map((scene, index) => ({
+      const defaultOrder = mockups[selectedMockup].scenes.map(scene => ({
         scene_id: scene.scene_id,
         in_frame: 0,
-        out_frame: Math.max(1, scene.default_duration_frames || 300), // Ensure out_frame is greater than in_frame
-        max_frame: Math.max(300, scene.default_duration_frames || 300), // Ensure max_frame is at least 300
-        thumb: scene.thumb,
+        out_frame: scene.default_duration_frames,
+        max_frame: scene.default_duration_frames, // Fixed maximum slider value.
+        thumb: scene.thumb,  // Include thumbnail property.
       }));
       setScenesData(defaultOrder);
     }
