@@ -1,18 +1,18 @@
-import { NextRequest } from 'next/server';
+export const runtime = 'nodejs';       
 
-export const runtime = 'nodejs';
-
-export async function GET(req: NextRequest) {
-  const url = req.nextUrl.searchParams.get('url');
-  if (!url) {
+export async function GET(req) {
+  // Extract the ?url=… query parameter
+  const { searchParams } = new URL(req.url);
+  const rawUrl = searchParams.get('url');
+  if (!rawUrl) {
     return new Response('Missing url query param', { status: 400 });
   }
 
-  const remote = await fetch(url);
+  const remote = await fetch(rawUrl);
 
   const headers = new Headers(remote.headers);
 
-  const filename = new URL(url).pathname.split('/').pop() || 'file.bin';
+  const filename = new URL(rawUrl).pathname.split('/').pop() || 'file.bin';
 
   headers.set('content-disposition', `attachment; filename="${filename}"`);
 
