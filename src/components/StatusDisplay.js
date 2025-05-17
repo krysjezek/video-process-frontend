@@ -1,27 +1,30 @@
 "use client";
-export default function StatusDisplay({ status, downloadUrl, jobSubmitted }) {
+export default function StatusDisplay({ status, downloadUrl }) {
+  const proxied = downloadUrl
+    ? `/api/download?url=${encodeURIComponent(downloadUrl)}`
+    : '';
+
   return (
-    <div style={{ marginBottom: "20px" }}>
-      {/* Show download button only if downloadUrl exists */}
-      {downloadUrl !== '' && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>Download Final Video</h2>
+    <div style={{ marginBottom: 20 }}>
+      {proxied && (
+        <>
+          <h2 style={{ marginTop: 20 }}>Download final video</h2>
           <a
-            href={downloadUrl}
-            download
+            href={proxied}
+            download               
             style={{
-              padding: "10px 20px",
-              backgroundColor: "#6f42c1",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              textDecoration: "none"
+              padding: '10px 20px',
+              backgroundColor: '#6f42c1',
+              color: '#fff',
+              borderRadius: 4,
+              textDecoration: 'none',
             }}
           >
             Download
           </a>
-        </div>
+        </>
       )}
+      <p>{status}</p>
     </div>
   );
 }
