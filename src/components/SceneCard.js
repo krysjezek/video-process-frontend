@@ -3,21 +3,24 @@ import { useState, useEffect } from "react";
 import { Range } from "react-range";
 
 export default function SceneCard({ scene, index, onChange }) {
-  const [inFrame, setInFrame] = useState(scene.in_frame);
-  const [outFrame, setOutFrame] = useState(scene.out_frame);
-  // Use the passed max_frame as a fixed maximum for the slider.
-  const [maxFrame] = useState(() => Number(scene.max_frame) || 300);
+  const [inFrame, setInFrame] = useState(Math.max(0, scene.in_frame || 0));
+  const [outFrame, setOutFrame] = useState(Math.max(1, scene.out_frame || 300));
+  const [maxFrame] = useState(() => Math.max(300, Number(scene.max_frame) || 300));
 
   useEffect(() => {
-    setInFrame(scene.in_frame);
-    setOutFrame(scene.out_frame);
+    setInFrame(Math.max(0, scene.in_frame || 0));
+    setOutFrame(Math.max(1, scene.out_frame || 300));
   }, [scene.in_frame, scene.out_frame]);
 
   const handleSliderChange = (values) => {
     const [start, end] = values;
-    setInFrame(start);
-    setOutFrame(end);
-    onChange(index, { ...scene, in_frame: start, out_frame: end });
+    // Ensure start is less than end
+    const validStart = Math.min(start, end - 1);
+    const validEnd = Math.max(end, validStart + 1);
+    
+    setInFrame(validStart);
+    setOutFrame(validEnd);
+    onChange(index, { ...scene, in_frame: validStart, out_frame: validEnd });
   };
 
   // Prevent slider events from propagating.
